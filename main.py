@@ -11,11 +11,20 @@ api_hash = os.environ.get('API_HASH')
 client = TelegramClient('base_session', api_id, api_hash)
 client.start()
 
+array_of_redirects = [os.environ.get('REDIRECT_FROM_' + str(i)) for i in range(1, int(os.environ.get('NUMBER_OF_CHANELS')) + 1) ]
 
-@client.on(events.NewMessage(os.environ.get('REDIRECT_FROM')))
+print(array_of_redirects)
+
+
+@client.on(events.NewMessage(array_of_redirects))
 async def reply(event):
     message = event.message
-    print(message.date)
+    print("[", end='')
+    print(message.date, end='')
+    print(']', end='user_id=')
+    print(message.from_id.user_id, end=': ')
+    print(message.text)
+
     await client.forward_messages(os.environ.get('REDIRECT_TO'), [message])
 
 
